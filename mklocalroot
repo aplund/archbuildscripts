@@ -1,0 +1,21 @@
+#!/bin/bash
+
+LOC=/var/lib/archbuild/local-x86_64
+ROOTLOC="$LOC/root"
+
+# This check is vital.  Don't blitz /root.
+# Also, _ALWAYS_ quote this variable.
+if [[ "$ROOTLOC" == "/root" ]]; then
+	echo "Root location problem."
+	exit 2
+fi
+
+if [[ -d "$ROOTLOC" ]]; then
+	echo "Local chroot exists.  Rebuilding."
+	sudo rm -rf "$ROOTLOC/var/lib/machines"
+	sudo btrfs subvolume delete "$ROOTLOC/var/lib/machines"
+	sudo rm -rf "$ROOTLOC"
+	sudo btrfs subvolume delete "$ROOTLOC"
+fi
+
+mkarchroot -M ~/.makepkg.conf "$LOC/root" base-devel

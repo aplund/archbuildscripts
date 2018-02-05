@@ -1,0 +1,15 @@
+#!/bin/bash
+
+asp update
+
+FAILED=""
+for i in */.git; do
+	pkg=${i%/.git}
+	echo $pkg
+	cd $pkg
+	git pull || FAILED="$FAILED $pkg"
+	cd ..
+done
+if [[ $FAILED != "" ]]; then echo "Failed: " $FAILED; fi
+
+

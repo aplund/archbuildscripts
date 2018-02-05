@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [[ ! -f PKGBUILD ]]; then
+	echo "No PKGBUILD"
+	exit 2
+fi
+
+source /usr/share/makepkg/util.sh
+source PKGBUILD
+source /home/lund/.makepkg.conf
+
+for pkg in "${pkgname[@]}"; do
+	fullver=$(get_full_version)
+	pkgarch=$(get_pkg_arch $pkg)
+	if [[ ! -f "$PKGDEST/${pkg}-${fullver}-${pkgarch}${PKGEXT}" ]]; then
+		#echo "Needs build"
+		exit 0
+	fi
+done
+
+#echo "All built"
+exit 1

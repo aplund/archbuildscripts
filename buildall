@@ -1,0 +1,16 @@
+#!/bin/bash
+
+sudo -v
+
+# OLDPWD="$PWD"
+FAILED=""
+for i in "$PWD/"*/repos/{core,extra}-{x86_64,any}/; do
+	if [ ! -d "$i" ]; then continue; fi
+	cd "$i"
+	if needsbuild; then
+	      local-x86_64-build || FAILED="$FAILED $i"
+	fi
+done
+# cd $OLDPWD
+
+if [[ "$FAILED" != "" ]]; then echo "Failed builds: $FAILED"; fi

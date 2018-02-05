@@ -1,0 +1,18 @@
+#!/bin/bash
+
+REPODIR=/home/arch/repo
+REPONAME=locdebug
+REPO=$REPODIR/$REPONAME.db.tar.xz
+source PKGBUILD
+
+printf "\033]0;$pkgname unpacking\007"
+makepkg -doC
+printf "\033]0;$pkgname building\007"
+if sudo makechrootpkg -c -r /var/lib/archbuild/local-x86_64 -- --nocheck; then
+	printf "\033]0;$pkgname repo-add\007"
+	repo-add "$REPO" ./*.pkg.tar*
+	cp ./*.pkg.tar* "$REPODIR"
+else
+	echo "Build failed $?"
+	exit 1
+fi
